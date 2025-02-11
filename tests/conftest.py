@@ -7,12 +7,21 @@ from utils import attach
 from dotenv import load_dotenv
 import allure
 
-DEFAULT_BROWSER_VERSION = '126.0'
+DEFAULT_BROWSER_VERSION = '120.0'
 
 
 def pytest_addoption(parser):
     parser.addoption(
+        '--browser',
+        help='Браузер, на котором будут запущены тесты',
+        choices=['chrome', 'firefox'],
+        default='chrome'
+    )
+
+    parser.addoption(
         '--browser_version',
+        help='Версия браузера, на котором будут запущены тесты',
+        choices=['120.0', '100.0'],
         default='120.0'
     )
 
@@ -22,15 +31,15 @@ def load_env():
     load_dotenv()
 
 
-@pytest.fixture(autouse=True, scope='function')
+@pytest.fixture(scope='function')
 def browser_management(request):
     with allure.step("Параметры браузера"):
+        browser_name = request.config.getoption('--browser')
         browser_version = request.config.getoption('--browser_version')
 
-        browser_version = browser_version if browser_version != '' else DEFAULT_BROWSER_VERSION
         options = Options()
         selenoid_capabilities = {
-            "browserName": "chrome",
+            "browserName": browser_name,
             "browserVersion": browser_version,
             "selenoid:options": {
                 "enableVNC": True,
@@ -40,20 +49,14 @@ def browser_management(request):
 
     options.capabilities.update(selenoid_capabilities)
 
-    login = os.getenv('LOGIN')
-    password = os.getenv('PASSWORD')
-    selenoid_host = os.getenv('SELENOID_HOST')
-
     driver = webdriver.Remote(
-        command_executor=f'https://{login}:{password}@{selenoid_host}/wd/hub',
+        command_executor=f"https://user1:1234@selenoid.autotests.cloud/wd/hub",
         options=options)
 
     browser.config.driver = driver
 
-    driver_options = webdriver.ChromeOptions()
-    driver_options.page_load_strategy = 'eager'
-    browser.config.driver_options = driver_options
-
+    options.page_load_strategy = 'eager'
+    browser.config.base_url = 'https://demoqa.com'
     browser.config.timeout = 2.0
     browser.config.window_width = 1920
     browser.config.window_height = 1080

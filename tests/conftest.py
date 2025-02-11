@@ -36,7 +36,7 @@ def load_env():
 def browser_management(request):
     with allure.step("Параметры браузера"):
         browser_name = request.config.getoption('--browser')
-        browser_version = request.config.getoption('browser_version')
+        browser_version = request.config.getoption('--browser_version')
 
         options = Options()
         selenoid_capabilities = {

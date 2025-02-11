@@ -18,13 +18,6 @@ def pytest_addoption(parser):
         default='chrome'
     )
 
-    parser.addoption(
-        '--browser_version',
-        help='Версия браузера, на котором будут запущены тесты',
-        choices=['120.0', '100.0'],
-        default='120.0'
-    )
-
 
 @pytest.fixture(scope='session', autouse=True)
 def load_env():
@@ -35,12 +28,11 @@ def load_env():
 def browser_management(request):
     with allure.step("Параметры браузера"):
         browser_name = request.config.getoption('--browser')
-        browser_version = request.config.getoption('--browser_version')
 
         options = Options()
         selenoid_capabilities = {
             "browserName": browser_name,
-            "browserVersion": browser_version,
+            "browserVersion": '120.0',
             "selenoid:options": {
                 "enableVNC": True,
                 "enableVideo": True
@@ -49,8 +41,12 @@ def browser_management(request):
 
     options.capabilities.update(selenoid_capabilities)
 
+    login = os.getenv('LOGIN')
+    password = os.getenv('PASSWORD')
+    selenoid_url = os.getenv('SELENOID_URL')
+
     driver = webdriver.Remote(
-        command_executor=f"https://user1:1234@selenoid.autotests.cloud/wd/hub",
+        command_executor=f"https://{login}:{password}@{selenoid_url}/wd/hub",
         options=options)
 
     browser.config.driver = driver

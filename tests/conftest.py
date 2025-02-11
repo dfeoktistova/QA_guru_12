@@ -7,7 +7,8 @@ from utils import attach
 from dotenv import load_dotenv
 import allure
 
-DEFAULT_BROWSER_VERSION = '120.0'
+DEFAULT_BROWSER = "chrome"
+DEFAULT_BROWSER_VERSION = "120.0"
 
 
 def pytest_addoption(parser):
@@ -16,6 +17,13 @@ def pytest_addoption(parser):
         help='Браузер, на котором будут запущены тесты',
         choices=['chrome', 'firefox'],
         default='chrome'
+    )
+
+    parser.addoption(
+        '--browser_version',
+        help='Версия браузера, на котором будут запущены тесты',
+        choices=['100', '120'],
+        default='100'
     )
 
 
@@ -28,11 +36,12 @@ def load_env():
 def browser_management(request):
     with allure.step("Параметры браузера"):
         browser_name = request.config.getoption('--browser')
+        browser_version = request.config.getoption('browser_version')
 
         options = Options()
         selenoid_capabilities = {
             "browserName": browser_name,
-            "browserVersion": '120.0',
+            "browserVersion": browser_version,
             "selenoid:options": {
                 "enableVNC": True,
                 "enableVideo": True

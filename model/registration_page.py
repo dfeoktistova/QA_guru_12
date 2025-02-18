@@ -26,8 +26,6 @@ class RegistrationPage:
         browser.driver.execute_script("$('#fixedban').remove()")
         browser.driver.execute_script("$('footer').remove()")
 
-        browser.driver.refresh()
-
     def fill_first_name(self, value):
         self.first_name.type(value)
 

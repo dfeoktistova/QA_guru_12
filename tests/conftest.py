@@ -60,14 +60,14 @@ def browser_management(request):
 
     browser.config.driver = driver
 
-    browser.driver.execute_script("$('#fixedban').remove()")
-    browser.driver.execute_script("$('footer').remove()")
-
     options.page_load_strategy = 'eager'
     browser.config.base_url = 'https://demoqa.com'
     browser.config.timeout = 2.0
     browser.config.window_width = 1920
     browser.config.window_height = 1080
+
+    browser.driver.execute_script("$('#fixedban').remove()")
+    browser.driver.execute_script("$('footer').remove()")
 
     yield browser
 

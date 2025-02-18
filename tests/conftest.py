@@ -66,9 +66,6 @@ def browser_management(request):
     browser.config.window_width = 1920
     browser.config.window_height = 1080
 
-    browser.driver.execute_script("$('#fixedban').remove()")
-    browser.driver.execute_script("$('footer').remove()")
-
     yield browser
 
     attach.add_screenshot(browser)

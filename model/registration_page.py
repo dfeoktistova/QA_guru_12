@@ -25,7 +25,7 @@ class RegistrationPage:
     def open(self):
         browser.open('https://demoqa.com/automation-practice-form')
 
-        time.sleep(1)
+        time.sleep(2)
 
         browser.driver.execute_script("$('#fixedban').remove()")
         browser.driver.execute_script("$('footer').remove()")
